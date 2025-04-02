@@ -15,7 +15,7 @@ def mixed_strat2v2(a: np.ndarray, D2: bool):
 
 
 
-    pointz1x1 , pointz1y1 = 1, a[1,0]
+    pointz1x1 , pointz1y1 = 1, a[1, 0]
     pointz1x2, pointz1y2 = 0, a[0, 0]
 
     pointz2x1 , pointz2y1 = 1, a[1,1]
@@ -40,12 +40,17 @@ def mixed_strat2v2(a: np.ndarray, D2: bool):
     #plt.plot(saddle_p, saddle_value, 'g*')
     plt.plot(x, z1, label='z1')
     plt.plot(x, z2, label='z2')
+    if D2 == False:
+        plt.title('D1 clean strategies')
+    else:
+        plt.title('D2 clean strategies')
+    plt.grid(True)
     plt.show()
 
-    return round(saddle_p,1), round(saddle_value,1)
+    return saddle_p,saddle_value #round(saddle_p,1), round(saddle_value,1)
 
-arr = np.array([[3, 0],
-                  [-1, 1]])
+arr = np.array([[4, -3],
+                [2, 5]])
 
-print(mixed_strat2v2(arr, True))
-print(mixed_strat2v2(arr, False))
+print("D2 clean strategies -> (saddle point, saddle value) =", mixed_strat2v2(arr, True))
+print("D1 clean strategies -> (saddle point, saddle value) =", mixed_strat2v2(arr, False))
