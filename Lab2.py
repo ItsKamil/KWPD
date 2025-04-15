@@ -66,7 +66,6 @@ def linear_prog(A, minimize):
             bounds = [(0, None)] * A.shape[0]
             nr = 1
             symb = "y"
-            
         else:
             A_ub = -A
             b_ub = [-1] * A.shape[0]
@@ -85,7 +84,7 @@ def linear_prog(A, minimize):
             [f"{symb}{i} = {p:.4f}" for i, p in enumerate(strategy, start=1)]
             )
             print(result)
-            print(f"Wartość gry (Sm): {Sm:.4f}")
+            print(f"Wynik gry (Sm): {Sm:.4f}")
         else:
             print("Nie udało się znaleźć rozwiązania.")
 
