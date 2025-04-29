@@ -47,18 +47,32 @@ def hierarchy(a: np.ndarray, b: np.ndarray, leader: bool):
             elif b[i,j] == min(tempB):
                 k=i
                 tempPoints.append((j, a[i, j]))
-    if k!=0:
-        best_j, _ = max(tempPoints, key=lambda x: x[1])
-        rationalPoints.append((k, best_j))
-        rationalValues.append((a[k, best_j], b[k, best_j]))
 
-    min_value = min(x[0] for x in rationalValues)
+    if leader == True:
+        if k!=0:
+            best_j, _ = max(tempPoints, key=lambda x: x[1])
+            rationalPoints.append((k, best_j))
+            rationalValues.append((a[k, best_j], b[k, best_j]))
 
-    strategy = [i for i, x in enumerate(rationalValues) if x[0] == min_value]
+        min_value = min(x[0] for x in rationalValues)
+
+        strategy = [i for i, x in enumerate(rationalValues) if x[0] == min_value]
 
 
-    selectedPoints = [rationalPoints[i] for i in strategy]
-    selectedValues = [rationalValues[i] for i in strategy]
+        selectedPoints = [rationalPoints[i] for i in strategy]
+        selectedValues = [rationalValues[i] for i in strategy]
+    else:
+        if k != 0:
+            best_j, _ = max(tempPoints, key=lambda x: x[1])
+            rationalPoints.append((k, best_j))
+            rationalValues.append((a[k, best_j], b[k, best_j]))
+
+        min_value = min(x[1] for x in rationalValues)
+
+        strategy = [i for i, x in enumerate(rationalValues) if x[1] == min_value]
+
+        selectedPoints = [rationalPoints[i] for i in strategy]
+        selectedValues = [rationalValues[i] for i in strategy]
 
     return selectedPoints, selectedValues
 
