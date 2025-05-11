@@ -5,6 +5,59 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+import math
+
+
+
+def draw_decision_tree(values1, values2=None):
+    if values2 is not None and len(values1) != len(values2):
+        raise ValueError("wrong size")
+    n = len(values1)
+    if n == 0 or (n & (n - 1)) != 0:
+        raise ValueError("wrong size")
+
+    depth = int(math.log2(n))
+
+    fig, ax = plt.subplots(figsize=(14, 2 + depth))
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.axis('off')
+
+    levels_y = [1.0 - i * (0.9 / (depth + 1)) for i in range(depth + 1)]
+
+    def draw_node(text, x, y, color="lightblue"):
+        ax.text(x, y, text, ha='center', va='center',
+                bbox=dict(boxstyle="round", facecolor=color))
+
+    def connect(x1, y1, x2, y2):
+        ax.plot([x1, x2], [y1, y2], 'k-')
+
+    def draw_subtree(x_center, level, idx):
+        if level == depth:
+            if values2 is not None:
+                label = f"{values1[idx]} | {values2[idx]}"
+            else:
+                label = f"{values1[idx]}"
+            draw_node(label, x_center, levels_y[level], color="lightgreen")
+            return
+
+        node_name = (level+1)%2
+        if node_name == 0: node_name = 2
+
+        draw_node(f"D{node_name}", x_center, levels_y[level])
+        offset = 1 / (2 ** (level + 2))
+        left_x = x_center - offset
+        right_x = x_center + offset
+
+        connect(x_center, levels_y[level], left_x, levels_y[level + 1])
+        connect(x_center, levels_y[level], right_x, levels_y[level + 1])
+
+        draw_subtree(left_x, level + 1, 2 * idx)
+        draw_subtree(right_x, level + 1, 2 * idx + 1)
+
+    draw_subtree(0.5, 0, 0)
+    plt.show()
+
 
 def arr_game(a: np.ndarray):
     max_in_rows = [max(row) for row in a]    # Maksymalne wartości w wierszach
@@ -129,7 +182,9 @@ def decision_tree_nash(a: np.ndarray, b: np.ndarray, K: int):
 
 dane = [-2, 0, -1, 3, 0, 7, -1, 4, -1, -2, 2, 1, 4, 3, 2, 1]
 dane2 =  [10, 2, 3, 1, 2, 0, -1, -2, 0, -1, 2, -4, -3, 0, 2, 1]
+a11 = np.array(dane)
 a1 = np.array(dane).reshape((1,16))
+a12 = np.array(dane2)
 a2 = np.array(dane2).reshape((1,16))
 ax =decision_tree(a1, 2)
 
@@ -139,13 +194,4 @@ print(ax)
 print("zad2" + str(ay))
 
 
-G = nx.Graph()
-
-
-G.add_edges_from([(1, 2), (2, 3), (3, 4), (4, 5), (5, 1)])
-
-
-plt.figure(figsize=(8, 6))
-nx.draw(G, with_labels=True, node_color='skyblue', node_size=2000, font_size=15, font_weight='bold', edge_color='gray')
-plt.title("Przykład grafu z wykorzystaniem networkx")
-plt.show()
+draw_decision_tree(dane)
